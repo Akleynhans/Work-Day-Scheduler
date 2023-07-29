@@ -1,10 +1,19 @@
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
-// var savebtn = document.querySelectorAll(button);
+var savebtn = document.querySelectorAll(".btn");
 var timeBlocksEl = document.querySelectorAll(".time-block");
 // var i = 0;
 var currentHour = dayjs().format('H');
+
+savebtn.forEach((button, i) => { 
+  savebtn[i].addEventListener("click", saveFunction);
+}) 
+
+function saveFunction () {
+  console.log('clicked');
+}
+
 
 // add date & time to page
 function clock() {
@@ -23,8 +32,6 @@ function clock() {
 clock()
 
 
-console.log(dayjs().format('m'));
-
 // function to check if timeblock is past present or future and add corresponding class
 
 function colorBlocks(timeblock, i) {
@@ -39,7 +46,7 @@ function colorBlocks(timeblock, i) {
     timeBlocksEl[i].classList.add("future");
     timeBlocksEl[i].classList.remove("past");
   }
-  i++;
+ 
 }
 
 function timeblockloop () {
@@ -51,12 +58,8 @@ function timeblockloop () {
 }
 timeblockloop()
 
-// colors
-// grab all hour blocks
-// Grab hour
-// go through array of hourblocks
-// if hour is >,<, or = add class (past, future, present)
-// css set color to data attribute
+
+
 
 // $(function () {
   // TODO: Add a listener for click events on the save button. This code should
