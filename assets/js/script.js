@@ -5,16 +5,17 @@ var savebtn = document.querySelectorAll(".btn");
 var timeBlocksEl = document.querySelectorAll(".time-block");
 // var i = 0;
 var currentHour = dayjs().format('H');
+var array4log = [];
 
 renderText()
 
 // addevent listener for save buttons
-savebtn.forEach((button, i) => { 
+savebtn.forEach((button, i) => {
   savebtn[i].addEventListener("click", saveFunction);
-}) 
+})
 
 // save text to local storage
-function saveFunction (e) {
+function saveFunction(e) {
   // get time-block id of clicked button
   var parentid = e.target.parentElement.parentElement.getAttribute("id");
   // get time-block element
@@ -24,30 +25,39 @@ function saveFunction (e) {
     id: parentid,
     content: parentEl.children[1].value
   }
-  
-  // save object to local storage
-  localStorage.setItem("savedText",JSON.stringify(object))
-  
+
+  // find if content is already saved for that timeBlock
+  const matchingIndex = array4log.findIndex(
+    (item) => item.id === object.id
+)
+// if so replace the content
+  if (matchingIndex !== -1) {
+    array4log[matchingIndex] = {id: object.id, content: object.content}
+  } else {
+    // if it doesnt exist add it to the array
+    array4log.push(object);
+  }
+
+  // save to local storage
+  localStorage.setItem("savedText", JSON.stringify(array4log))
 }
 
 function renderText() {
-  savedtext = JSON.parse(localStorage.getItem("savedText"));
-  console.log(savedtext)
-  var parentEl = document.getElementById(savedtext.id)
-  parentEl.children[1].textContent = savedtext.content;
-  
-  // save id
-  // create object with id and content
-  // use queryselector to grab id
-  // add savedText as textcontent
+  array4log = JSON.parse(localStorage.getItem("savedText") || "[]");
+
+  for (var i = 0; i < array4log.length; i++) {
+    var parentEl = document.getElementById(array4log[i].id);
+    parentEl.children[1].textContent = array4log[i].content;
+  }
 }
+
 
 
 // add date & time to page
 function clock() {
   // display clock
   $('#currentDay').text(dayjs().format('MMMM D, YYYY h:mm A'));
-  
+
   // refresh calander at the hour
   if (dayjs().format('m') == 11) {
     timeblockloop()
@@ -74,14 +84,14 @@ function colorBlocks(timeblock, i) {
     timeBlocksEl[i].classList.remove("past");
     timeBlocksEl[i].classList.add("future");
   }
- console.log('run')
+
 }
 
-function timeblockloop () {
+function timeblockloop() {
   // run each timeblock through the function
   timeBlocksEl.forEach((timeblock, i) => {
     colorBlocks(timeblock, i)
-  
+
   });
 
 }
