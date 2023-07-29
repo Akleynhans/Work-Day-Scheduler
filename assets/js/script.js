@@ -6,12 +6,40 @@ var timeBlocksEl = document.querySelectorAll(".time-block");
 // var i = 0;
 var currentHour = dayjs().format('H');
 
+renderText()
+
+// addevent listener for save buttons
 savebtn.forEach((button, i) => { 
   savebtn[i].addEventListener("click", saveFunction);
 }) 
 
-function saveFunction () {
-  console.log('clicked');
+// save text to local storage
+function saveFunction (e) {
+  // get time-block id of clicked button
+  var parentid = e.target.parentElement.parentElement.getAttribute("id");
+  // get time-block element
+  var parentEl = document.getElementById(parentid);
+  // object containing id and content
+  var object = {
+    id: parentid,
+    content: parentEl.children[1].value
+  }
+  
+  // save object to local storage
+  localStorage.setItem("savedText",JSON.stringify(object))
+  
+}
+
+function renderText() {
+  savedtext = JSON.parse(localStorage.getItem("savedText"));
+  console.log(savedtext)
+  var parentEl = document.getElementById(savedtext.id)
+  parentEl.children[1].textContent = savedtext.content;
+  
+  // save id
+  // create object with id and content
+  // use queryselector to grab id
+  // add savedText as textcontent
 }
 
 
@@ -21,7 +49,7 @@ function clock() {
   $('#currentDay').text(dayjs().format('MMMM D, YYYY h:mm A'));
   
   // refresh calander at the hour
-  if (dayjs().format('m') == 0) {
+  if (dayjs().format('m') == 11) {
     timeblockloop()
   }
   // run function on interval to keep updated
@@ -36,23 +64,24 @@ clock()
 
 function colorBlocks(timeblock, i) {
   if (i + 9 == currentHour) {
-    timeBlocksEl[i].classList.add("present");
     timeBlocksEl[i].classList.remove("future");
+    timeBlocksEl[i].classList.add("present");
 
   } else if (i + 9 < currentHour) {
-    timeBlocksEl[i].classList.add("past");
     timeBlocksEl[i].classList.remove("present");
+    timeBlocksEl[i].classList.add("past");
   } else {
-    timeBlocksEl[i].classList.add("future");
     timeBlocksEl[i].classList.remove("past");
+    timeBlocksEl[i].classList.add("future");
   }
- 
+ console.log('run')
 }
 
 function timeblockloop () {
   // run each timeblock through the function
   timeBlocksEl.forEach((timeblock, i) => {
     colorBlocks(timeblock, i)
+  
   });
 
 }
